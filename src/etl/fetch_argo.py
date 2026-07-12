@@ -1,9 +1,14 @@
 import os
 import random
+import requests
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from src.database.sqlite_client import get_connection, init_db
+import xarray as xr
+from src.database.db_client import init_db, insert_dataframe, get_connection
+
+# Disable urllib3 SSL warnings
+requests.packages.urllib3.disable_warnings()
 
 def region_label(lat, lon):
     if -5 <= lat <= 5:
@@ -15,7 +20,7 @@ def region_label(lat, lon):
     return "Other"
 
 def generate_synthetic_data():
-    print("Generating oceanographically accurate synthetic ARGO data...")
+    print("Generating oceanographically accurate synthetic ARGO data as fallback...")
     records = []
     
     # 5 Floats distributed in different regions
@@ -49,7 +54,6 @@ def generate_synthetic_data():
             # Generate vertical profile measurements
             for d in depths:
                 # Temperature profile (decreases with depth)
-                # Thermocline region around 50m-150m where temp drops rapidly
                 if d <= 30:
                     temp = fl["temp_base"] - (d * 0.02)
                 elif d <= 150:
@@ -59,14 +63,12 @@ def generate_synthetic_data():
                 
                 # Add minor noise
                 temp += random.uniform(-0.15, 0.15)
-                temp = max(4.0, temp) # Deep ocean bottom temp limit
+                temp = max(4.0, temp)
                 
-                # Salinity profile (slightly increases/decreases based on depth and region)
+                # Salinity profile
                 if region == "Arabian Sea":
-                    # Salinity is high at surface, slight subsurface maximum
                     sal = fl["sal_base"] + (0.1 if d < 100 else -0.2)
                 elif region == "Bay of Bengal":
-                    # Salinity is low at surface due to freshwater, increases with depth
                     sal = fl["sal_base"] + (d * 0.003 if d < 200 else 0.6)
                 else:
                     sal = fl["sal_base"] + (d * 0.001)
@@ -87,60 +89,159 @@ def generate_synthetic_data():
     df = pd.DataFrame(records)
     return df
 
+def fetch_real_netcdf_float(wmo_id, dac_suggested):
+    """
+    Downloads and parses a real NetCDF file from the Ifremer GDAC.
+    Retries different DAC directories if the suggested one fails.
+    """
+    dacs = [dac_suggested] + [d for d in ["incois", "aoml", "coriolis", "jma", "kordi", "meds", "bodc", "csio", "csiro"] if d != dac_suggested]
+    temp_filename = f"temp_{wmo_id}_prof.nc"
+    
+    success = False
+    downloaded_path = None
+    
+    for dac in dacs:
+        url = f"https://data-argo.ifremer.fr/dac/{dac}/{wmo_id}/{wmo_id}_prof.nc"
+        print(f"Trying to download: {url}")
+        try:
+            res = requests.get(url, verify=False, timeout=15)
+            if res.status_code == 200:
+                with open(temp_filename, "wb") as f:
+                    f.write(res.content)
+                print(f"Successfully downloaded {wmo_id}_prof.nc from DAC '{dac}'")
+                downloaded_path = temp_filename
+                success = True
+                break
+            else:
+                print(f"Skipping {dac}: HTTP {res.status_code}")
+        except Exception as e:
+            print(f"Failed to fetch from DAC {dac}: {e}")
+            
+    if not success or not downloaded_path:
+        raise ValueError(f"Could not download profile data for WMO float {wmo_id} from any DAC.")
+        
+    records = []
+    try:
+        with xr.open_dataset(downloaded_path) as ds:
+            # Check dimensions
+            n_prof = ds.sizes.get('N_PROF', 0)
+            n_levels = ds.sizes.get('N_LEVELS', 0)
+            print(f"Float {wmo_id}: Found {n_prof} profiles, {n_levels} vertical levels.")
+            
+            # Extract variables as numpy arrays
+            platform_numbers = ds['PLATFORM_NUMBER'].values
+            latitudes = ds['LATITUDE'].values
+            longitudes = ds['LONGITUDE'].values
+            julds = ds['JULD'].values
+            pres = ds['PRES'].values
+            temp = ds['TEMP'].values
+            psal = ds['PSAL'].values
+            
+            # Limit profiles to last 15 profiles to keep database size optimal and relevant
+            profile_indices = range(max(0, n_prof - 15), n_prof)
+            
+            for i in profile_indices:
+                try:
+                    # Platform number is typically bytes
+                    p_bytes = platform_numbers[i]
+                    float_id = p_bytes.decode('utf-8').strip() if isinstance(p_bytes, bytes) else str(p_bytes).strip()
+                    
+                    lat = float(latitudes[i])
+                    lon = float(longitudes[i])
+                    
+                    if np.isnan(lat) or np.isnan(lon):
+                        continue
+                        
+                    region = region_label(lat, lon)
+                    date_str = pd.to_datetime(julds[i]).strftime("%Y-%m-%d")
+                    
+                    for j in range(n_levels):
+                        p_val = float(pres[i, j])
+                        t_val = float(temp[i, j])
+                        s_val = float(psal[i, j])
+                        
+                        # Only ingest non-null surface/subsurface records (let's say up to 600m depth)
+                        if np.isnan(p_val) or np.isnan(t_val) or np.isnan(s_val):
+                            continue
+                        if p_val < 0 or p_val > 600:
+                            continue
+                            
+                        records.append({
+                            "float_id": float_id,
+                            "lat": round(lat, 4),
+                            "lon": round(lon, 4),
+                            "date": date_str,
+                            "depth": round(p_val, 2),
+                            "temperature": round(t_val, 2),
+                            "salinity": round(s_val, 2),
+                            "region": region
+                        })
+                except Exception as entry_err:
+                    # Skip problematic profiles
+                    continue
+    finally:
+        if os.path.exists(downloaded_path):
+            try:
+                os.remove(downloaded_path)
+            except Exception as clean_err:
+                print(f"Error removing temp file: {clean_err}")
+                
+    df = pd.DataFrame(records)
+    print(f"Extracted {len(df)} records for float {wmo_id}")
+    return df
+
 def fetch_and_store():
+    # Initialize the database (DuckDB / TimescaleDB)
     init_db()
     
-    # Bounding box for a very small test region (Arabian Sea, short timeframe)
-    # [lon_min, lon_max, lat_min, lat_max, depth_min, depth_max, date_start, date_end]
-    box = [65.0, 67.0, 12.0, 14.0, 0, 100, "2023-01-01", "2023-01-05"]
+    # 6 WMO Floats to ingest (real WMO platforms)
+    floats_to_fetch = [
+        {"id": "2902264", "dac": "incois"},
+        {"id": "2902265", "dac": "incois"},
+        {"id": "2902266", "dac": "incois"},
+        {"id": "5904663", "dac": "aoml"},
+        {"id": "5904664", "dac": "aoml"},
+        {"id": "6900186", "dac": "coriolis"}
+    ]
     
-    print("Attempting to fetch real Argo data from argopy (15s timeout)...")
-    try:
-        import argopy
-        # Configure argopy to use a shorter timeout or check
-        argopy.set_options(src='erddap') # standard public erddap server
+    all_data = []
+    errors = []
+    
+    print("Attempting to ingest real ARGO NetCDF files from Ifremer GDAC...")
+    for fl in floats_to_fetch:
+        try:
+            df = fetch_real_netcdf_float(fl["id"], fl["dac"])
+            if not df.empty:
+                all_data.append(df)
+        except Exception as e:
+            msg = f"Failed to fetch/parse real data for float {fl['id']}: {e}"
+            print(msg)
+            errors.append(msg)
+            
+    if all_data:
+        # Concatenate and insert real data
+        final_df = pd.concat(all_data, ignore_index=True)
+        print(f"Ingesting {len(final_df)} rows of REAL oceanographic data...")
+        insert_dataframe(final_df, "floats")
+    else:
+        print("Real data ingestion failed entirely. Falling back to synthetic generator...")
+        synthetic_df = generate_synthetic_data()
+        print(f"Ingesting {len(synthetic_df)} rows of synthetic data...")
+        insert_dataframe(synthetic_df, "floats")
         
-        # Load from erddap (wrapped in a try block)
-        ds = argopy.DataFetcher().region(box).to_xarray()
-        df = ds.to_dataframe().reset_index()
-        
-        # Rename columns to match SQLite schema
-        df = df.rename(columns={
-            "PLATFORM_NUMBER": "float_id",
-            "LATITUDE": "lat",
-            "LONGITUDE": "lon",
-            "TIME": "date",
-            "PRES": "depth",
-            "TEMP": "temperature",
-            "PSAL": "salinity"
-        })
-        
-        # Convert platform numbers to strings if they are numeric
-        df["float_id"] = df["float_id"].astype(str)
-        df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
-        df["region"] = df.apply(lambda r: region_label(r["lat"], r["lon"]), axis=1)
-        
-        # Select required columns
-        df = df[["float_id", "lat", "lon", "date", "depth", "temperature", "salinity", "region"]]
-        
-        # Clean any null values in required fields
-        df = df.dropna(subset=["float_id", "lat", "lon", "date", "depth"])
-        
-        print(f"Success! Fetched {len(df)} real rows from argopy.")
-        
-    except Exception as e:
-        print(f"Argopy fetch failed or timed out: {e}")
-        df = generate_synthetic_data()
-        
-    # Write to database
+    # Verify count
     conn = get_connection()
-    df.to_sql("floats", conn, if_exists="append", index=False)
+    # Check table row count
+    db_type = os.getenv("DB_TYPE", "duckdb").lower()
+    if db_type == "postgres":
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM floats;")
+        count = cur.fetchone()[0]
+        cur.close()
+    else:
+        count = conn.execute("SELECT COUNT(*) FROM floats;").fetchone()[0]
     conn.close()
     
-    # Confirm
-    conn = get_connection()
-    count = conn.execute("SELECT COUNT(*) FROM floats;").fetchone()[0]
-    conn.close()
     print(f"ETL Complete. Total rows in floats database: {count}")
 
 if __name__ == "__main__":

@@ -14,3 +14,10 @@ streamlit-folium
 python-dotenv
 sqlalchemy
 requests
+duckdb
+psycopg2-binary
+redis
+slowapi
+loguru
+pytest
+ruff

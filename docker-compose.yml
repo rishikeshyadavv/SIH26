@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  db:
+    image: timescale/timescaledb:latest-pg15
+    container_name: floatchat-db
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-floats_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    container_name: floatchat-redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: floatchat-backend
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - DB_TYPE=postgres
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-floats_db}
+      - REDIS_URL=redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: floatchat-frontend
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - API_URL=http://backend:8000/ask
+      - DB_TYPE=postgres
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-floats_db}
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

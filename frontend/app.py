@@ -4,8 +4,13 @@ import pandas as pd
 import plotly.express as px
 import folium
 from streamlit_folium import st_folium
-import sqlite3
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Import database client for direct stats queries
+from src.database.db_client import get_connection, DB_TYPE
 
 # Page config
 st.set_page_config(
@@ -17,20 +22,31 @@ st.set_page_config(
 
 # API configuration
 API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/ask")
-DB_PATH = os.getenv("DB_PATH", "data/argo_data.db")
+FLOAT_API_KEY = os.getenv("FLOAT_API_KEY", "float_secret_key_2026")
 
 # Helper to fetch DB stats directly for the sidebar
 def get_db_stats():
     try:
-        if not os.path.exists(DB_PATH):
-            return None
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        total_records = cursor.execute("SELECT COUNT(*) FROM floats;").fetchone()[0]
-        unique_floats = cursor.execute("SELECT COUNT(DISTINCT float_id) FROM floats;").fetchone()[0]
-        regions = cursor.execute("SELECT DISTINCT region FROM floats;").fetchall()
-        regions_list = [r[0] for r in regions if r[0]]
-        date_range = cursor.execute("SELECT MIN(date), MAX(date) FROM floats;").fetchone()
+        conn = get_connection()
+        if DB_TYPE == "postgres":
+            cur = conn.cursor()
+            cur.execute("SELECT COUNT(*) FROM floats;")
+            total_records = cur.fetchone()[0]
+            cur.execute("SELECT COUNT(DISTINCT float_id) FROM floats;")
+            unique_floats = cur.fetchone()[0]
+            cur.execute("SELECT DISTINCT region FROM floats;")
+            regions = cur.fetchall()
+            regions_list = [r[0] for r in regions if r[0]]
+            cur.execute("SELECT MIN(date), MAX(date) FROM floats;")
+            date_range = cur.fetchone()
+            cur.close()
+        else:
+            # DuckDB
+            total_records = conn.execute("SELECT COUNT(*) FROM floats;").fetchone()[0]
+            unique_floats = conn.execute("SELECT COUNT(DISTINCT float_id) FROM floats;").fetchone()[0]
+            regions = conn.execute("SELECT DISTINCT region FROM floats;").fetchall()
+            regions_list = [r[0] for r in regions if r[0]]
+            date_range = conn.execute("SELECT MIN(date), MAX(date) FROM floats;").fetchone()
         conn.close()
         return {
             "total_records": total_records,
@@ -116,7 +132,8 @@ def process_query(question_text):
     # Send request to backend API
     with st.spinner("Analyzing data..."):
         try:
-            res = requests.post(API_URL, json={"question": question_text}, timeout=15)
+            headers = {"X-API-Key": FLOAT_API_KEY}
+            res = requests.post(API_URL, json={"question": question_text}, headers=headers, timeout=15)
             if res.status_code == 200:
                 api_res = res.json()
                 st.session_state.messages.append({"role": "assistant", "data": api_res})

@@ -1,0 +1,23 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy necessary source files and frontend files
+COPY src/ ./src/
+COPY frontend/ ./frontend/
+COPY data/ ./data/
+
+EXPOSE 8501
+
+# Run streamlit
+CMD ["streamlit", "run", "frontend/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]

@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Show me the temperature profile of float 2902264",
+    "sql": "SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500"
+  },
+  {
+    "question": "What's the salinity in the Arabian Sea in January 2023?",
+    "sql": "SELECT float_id, lat, lon, date, depth, salinity FROM floats WHERE region = 'Arabian Sea' AND date BETWEEN '2023-01-01' AND '2023-01-31' LIMIT 500"
+  },
+  {
+    "question": "Compare salinity in the Arabian Sea vs Bay of Bengal",
+    "sql": "SELECT region, AVG(salinity) as avg_salinity FROM floats WHERE region IN ('Arabian Sea', 'Bay of Bengal') GROUP BY region"
+  },
+  {
+    "question": "Find nearest ARGO floats to lat 12, lon 65",
+    "sql": "SELECT float_id, lat, lon, region, MIN((lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0)) as distance_sq FROM floats GROUP BY float_id, lat, lon, region ORDER BY distance_sq LIMIT 5"
+  },
+  {
+    "question": "What is the average temperature in Equatorial region in March 2023?",
+    "sql": "SELECT AVG(temperature) as avg_temp FROM floats WHERE region = 'Equatorial' AND date BETWEEN '2023-03-01' AND '2023-03-31'"
+  },
+  {
+    "question": "Find temperature at 50m depth in the Bay of Bengal on 2023-01-11",
+    "sql": "SELECT float_id, lat, lon, date, temperature FROM floats WHERE region = 'Bay of Bengal' AND depth = 50.0 AND date = '2023-01-11' LIMIT 500"
+  },
+  {
+    "question": "What's the maximum temperature recorded by float 2902266?",
+    "sql": "SELECT MAX(temperature) as max_temp FROM floats WHERE float_id = '2902266'"
+  },
+  {
+    "question": "Give me a list of all unique float IDs",
+    "sql": "SELECT DISTINCT float_id FROM floats ORDER BY float_id"
+  },
+  {
+    "question": "Show all records for float 5904664",
+    "sql": "SELECT * FROM floats WHERE float_id = '5904664' ORDER BY date, depth LIMIT 500"
+  },
+  {
+    "question": "What is the average salinity profile for Bay of Bengal in March 2023?",
+    "sql": "SELECT depth, AVG(salinity) as avg_salinity FROM floats WHERE region = 'Bay of Bengal' AND date BETWEEN '2023-03-01' AND '2023-03-31' GROUP BY depth ORDER BY depth"
+  },
+  {
+    "question": "Find all records in Arabian Sea",
+    "sql": "SELECT * FROM floats WHERE region = 'Arabian Sea' LIMIT 500"
+  },
+  {
+    "question": "Average salinity in the Equatorial region",
+    "sql": "SELECT AVG(salinity) as avg_salinity FROM floats WHERE region = 'Equatorial'"
+  },
+  {
+    "question": "List all observations for float 2902265 in February 2023",
+    "sql": "SELECT * FROM floats WHERE float_id = '2902265' AND date BETWEEN '2023-02-01' AND '2023-02-28' ORDER BY date, depth LIMIT 500"
+  },
+  {
+    "question": "What is the minimum temperature recorded in the Arabian Sea?",
+    "sql": "SELECT MIN(temperature) as min_temp FROM floats WHERE region = 'Arabian Sea'"
+  },
+  {
+    "question": "What is the maximum salinity recorded in the Bay of Bengal?",
+    "sql": "SELECT MAX(salinity) as max_salinity FROM floats WHERE region = 'Bay of Bengal'"
+  },
+  {
+    "question": "Show records where salinity is greater than 36",
+    "sql": "SELECT * FROM floats WHERE salinity > 36.0 LIMIT 500"
+  },
+  {
+    "question": "Show records where temperature is below 10 degrees Celsius",
+    "sql": "SELECT * FROM floats WHERE temperature < 10.0 LIMIT 500"
+  },
+  {
+    "question": "Find nearest floats to lat 0, lon 75",
+    "sql": "SELECT float_id, lat, lon, region, MIN((lat - 0.0)*(lat - 0.0) + (lon - 75.0)*(lon - 75.0)) as distance_sq FROM floats GROUP BY float_id, lat, lon, region ORDER BY distance_sq LIMIT 5"
+  },
+  {
+    "question": "Count total records per float ID",
+    "sql": "SELECT float_id, COUNT(*) as record_count FROM floats GROUP BY float_id ORDER BY record_count DESC"
+  },
+  {
+    "question": "Average temperature and salinity for each region",
+    "sql": "SELECT region, AVG(temperature) as avg_temp, AVG(salinity) as avg_salinity FROM floats GROUP BY region"
+  },
+  {
+    "question": "What is the average temperature at 100m depth?",
+    "sql": "SELECT AVG(temperature) as avg_temp FROM floats WHERE depth = 100.0"
+  },
+  {
+    "question": "What is the average salinity at 10m depth in the Arabian Sea?",
+    "sql": "SELECT AVG(salinity) as avg_salinity FROM floats WHERE depth = 10.0 AND region = 'Arabian Sea'"
+  },
+  {
+    "question": "Show temperature profile of float 5904663",
+    "sql": "SELECT depth, temperature FROM floats WHERE float_id = '5904663' ORDER BY depth LIMIT 500"
+  },
+  {
+    "question": "Show salinity profile of float 2902265",
+    "sql": "SELECT depth, salinity FROM floats WHERE float_id = '2902265' ORDER BY depth LIMIT 500"
+  },
+  {
+    "question": "List unique regions recorded in the database",
+    "sql": "SELECT DISTINCT region FROM floats ORDER BY region"
+  },
+  {
+    "question": "Find floats with temperature above 28 degrees in Bay of Bengal at the surface",
+    "sql": "SELECT DISTINCT float_id FROM floats WHERE region = 'Bay of Bengal' AND temperature > 28.0 AND depth = 0.0"
+  },
+  {
+    "question": "List all observations in the month of January 2023",
+    "sql": "SELECT * FROM floats WHERE date BETWEEN '2023-01-01' AND '2023-01-31' LIMIT 500"
+  },
+  {
+    "question": "How many records are there in the Equatorial region?",
+    "sql": "SELECT COUNT(*) as count FROM floats WHERE region = 'Equatorial'"
+  },
+  {
+    "question": "Count records for each unique region",
+    "sql": "SELECT region, COUNT(*) as count FROM floats GROUP BY region ORDER BY count DESC"
+  },
+  {
+    "question": "Show all records for float 2902264 ordered by date descending",
+    "sql": "SELECT * FROM floats WHERE float_id = '2902264' ORDER BY date DESC, depth LIMIT 500"
+  },
+  {
+    "question": "Average temperature profile for Arabian Sea in 2023",
+    "sql": "SELECT depth, AVG(temperature) as avg_temp FROM floats WHERE region = 'Arabian Sea' AND date BETWEEN '2023-01-01' AND '2023-12-31' GROUP BY depth ORDER BY depth"
+  },
+  {
+    "question": "Compare average temperature in Equatorial vs Arabian Sea",
+    "sql": "SELECT region, AVG(temperature) as avg_temp FROM floats WHERE region IN ('Equatorial', 'Arabian Sea') GROUP BY region"
+  },
+  {
+    "question": "Find nearest floats to latitude 15, longitude 90",
+    "sql": "SELECT float_id, lat, lon, region, MIN((lat - 15.0)*(lat - 15.0) + (lon - 90.0)*(lon - 90.0)) as distance_sq FROM floats GROUP BY float_id, lat, lon, region ORDER BY distance_sq LIMIT 5"
+  },
+  {
+    "question": "Get records of float 6900186",
+    "sql": "SELECT * FROM floats WHERE float_id = '6900186' ORDER BY date, depth LIMIT 500"
+  },
+  {
+    "question": "What's the maximum depth recorded by float 2902264?",
+    "sql": "SELECT MAX(depth) as max_depth FROM floats WHERE float_id = '2902264'"
+  },
+  {
+    "question": "Minimum salinity recorded by float 5904664",
+    "sql": "SELECT MIN(salinity) as min_salinity FROM floats WHERE float_id = '5904664'"
+  },
+  {
+    "question": "Average salinity for each float ID",
+    "sql": "SELECT float_id, AVG(salinity) as avg_salinity FROM floats GROUP BY float_id ORDER BY avg_salinity"
+  },
+  {
+    "question": "Average temperature for each float ID",
+    "sql": "SELECT float_id, AVG(temperature) as avg_temp FROM floats GROUP BY float_id ORDER BY avg_temp DESC"
+  },
+  {
+    "question": "Show surface temperature records (depth = 0) in Arabian Sea",
+    "sql": "SELECT float_id, lat, lon, date, temperature FROM floats WHERE region = 'Arabian Sea' AND depth = 0.0 LIMIT 500"
+  },
+  {
+    "question": "Show surface salinity records (depth = 0) in Bay of Bengal",
+    "sql": "SELECT float_id, lat, lon, date, salinity FROM floats WHERE region = 'Bay of Bengal' AND depth = 0.0 LIMIT 500"
+  },
+  {
+    "question": "Count of records per date",
+    "sql": "SELECT date, COUNT(*) as count FROM floats GROUP BY date ORDER BY date LIMIT 500"
+  },
+  {
+    "question": "Compare maximum salinity between Arabian Sea and Bay of Bengal",
+    "sql": "SELECT region, MAX(salinity) as max_salinity FROM floats WHERE region IN ('Arabian Sea', 'Bay of Bengal') GROUP BY region"
+  },
+  {
+    "question": "Show all records with depth greater than 200m",
+    "sql": "SELECT * FROM floats WHERE depth > 200.0 LIMIT 500"
+  },
+  {
+    "question": "Show all records with depth between 50m and 100m",
+    "sql": "SELECT * FROM floats WHERE depth BETWEEN 50.0 AND 100.0 LIMIT 500"
+  },
+  {
+    "question": "Find nearest floats to lat -2, lon 73",
+    "sql": "SELECT float_id, lat, lon, region, MIN((lat - -2.0)*(lat - -2.0) + (lon - 73.0)*(lon - 73.0)) as distance_sq FROM floats GROUP BY float_id, lat, lon, region ORDER BY distance_sq LIMIT 5"
+  },
+  {
+    "question": "What is the average salinity profile for float 2902264?",
+    "sql": "SELECT depth, AVG(salinity) as avg_salinity FROM floats WHERE float_id = '2902264' GROUP BY depth ORDER BY depth"
+  },
+  {
+    "question": "Find all records for float 2902265 where temperature is higher than 29",
+    "sql": "SELECT * FROM floats WHERE float_id = '2902265' AND temperature > 29.0 LIMIT 500"
+  },
+  {
+    "question": "What is the average temperature at the surface (depth = 0)?",
+    "sql": "SELECT AVG(temperature) as avg_temp FROM floats WHERE depth = 0.0"
+  },
+  {
+    "question": "List observations for float 5904663 at depth 0",
+    "sql": "SELECT * FROM floats WHERE float_id = '5904663' AND depth = 0.0 ORDER BY date LIMIT 500"
+  },
+  {
+    "question": "Show records in Bay of Bengal with salinity less than 32.5",
+    "sql": "SELECT * FROM floats WHERE region = 'Bay of Bengal' AND salinity < 32.5 LIMIT 500"
+  }
+]
