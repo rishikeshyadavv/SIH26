@@ -94,18 +94,28 @@ def fetch_real_netcdf_float(wmo_id, dac_suggested):
     Downloads and parses a real NetCDF file from the Ifremer GDAC.
     Retries different DAC directories if the suggested one fails.
     """
+    import hashlib
+    from src.etl.provenance import log_ingestion
+
     dacs = [dac_suggested] + [d for d in ["incois", "aoml", "coriolis", "jma", "kordi", "meds", "bodc", "csio", "csiro"] if d != dac_suggested]
     temp_filename = f"temp_{wmo_id}_prof.nc"
     
     success = False
     downloaded_path = None
     
+    last_dac = dac_suggested
+    last_url = f"https://data-argo.ifremer.fr/dac/{dac_suggested}/{wmo_id}/{wmo_id}_prof.nc"
+    file_sha256 = None
+    
     for dac in dacs:
         url = f"https://data-argo.ifremer.fr/dac/{dac}/{wmo_id}/{wmo_id}_prof.nc"
+        last_dac = dac
+        last_url = url
         print(f"Trying to download: {url}")
         try:
             res = requests.get(url, verify=False, timeout=15)
             if res.status_code == 200:
+                file_sha256 = hashlib.sha256(res.content).hexdigest()
                 with open(temp_filename, "wb") as f:
                     f.write(res.content)
                 print(f"Successfully downloaded {wmo_id}_prof.nc from DAC '{dac}'")
@@ -118,9 +128,24 @@ def fetch_real_netcdf_float(wmo_id, dac_suggested):
             print(f"Failed to fetch from DAC {dac}: {e}")
             
     if not success or not downloaded_path:
-        raise ValueError(f"Could not download profile data for WMO float {wmo_id} from any DAC.")
+        err_msg = f"Could not download profile data for WMO float {wmo_id} from any DAC."
+        try:
+            log_ingestion(
+                wmo_id=wmo_id,
+                dac=last_dac,
+                url=last_url,
+                n_profiles_found=0,
+                n_records_extracted=0,
+                status="failed",
+                error_message=err_msg,
+                file_sha256=None
+            )
+        except Exception as log_err:
+            print(f"Provenance logging failed: {log_err}")
+        raise ValueError(err_msg)
         
     records = []
+    n_prof = 0
     try:
         with xr.open_dataset(downloaded_path) as ds:
             # Check dimensions
@@ -179,21 +204,69 @@ def fetch_real_netcdf_float(wmo_id, dac_suggested):
                 except Exception as entry_err:
                     # Skip problematic profiles
                     continue
+                    
+        df = pd.DataFrame(records)
+        print(f"Extracted {len(df)} records for float {wmo_id}")
+        
+        try:
+            log_ingestion(
+                wmo_id=wmo_id,
+                dac=last_dac,
+                url=last_url,
+                n_profiles_found=n_prof,
+                n_records_extracted=len(df),
+                status="success",
+                error_message=None,
+                file_sha256=file_sha256
+            )
+        except Exception as log_err:
+            print(f"Provenance logging failed: {log_err}")
+            
+        return df
+    except Exception as e:
+        try:
+            log_ingestion(
+                wmo_id=wmo_id,
+                dac=last_dac,
+                url=last_url,
+                n_profiles_found=n_prof,
+                n_records_extracted=0,
+                status="failed",
+                error_message=str(e),
+                file_sha256=file_sha256
+            )
+        except Exception as log_err:
+            print(f"Provenance logging failed: {log_err}")
+        raise e
     finally:
         if os.path.exists(downloaded_path):
             try:
                 os.remove(downloaded_path)
             except Exception as clean_err:
                 print(f"Error removing temp file: {clean_err}")
-                
-    df = pd.DataFrame(records)
-    print(f"Extracted {len(df)} records for float {wmo_id}")
-    return df
 
 def fetch_and_store():
     # Initialize the database (DuckDB / TimescaleDB)
     init_db()
     
+    db_type = os.getenv("DB_TYPE", "duckdb").lower()
+    
+    # Clear the floats table before starting a new run
+    conn = get_connection()
+    try:
+        if db_type == "postgres":
+            cur = conn.cursor()
+            cur.execute("DELETE FROM floats;")
+            conn.commit()
+            cur.close()
+        else:
+            conn.execute("DELETE FROM floats;")
+        print("Cleared existing rows from floats table.")
+    except Exception as clear_err:
+        print(f"Error clearing floats table: {clear_err}")
+    finally:
+        conn.close()
+        
     # 6 WMO Floats to ingest (real WMO platforms)
     floats_to_fetch = [
         {"id": "2902264", "dac": "incois"},
@@ -206,6 +279,7 @@ def fetch_and_store():
     
     all_data = []
     errors = []
+    expected_records = 0
     
     print("Attempting to ingest real ARGO NetCDF files from Ifremer GDAC...")
     for fl in floats_to_fetch:
@@ -213,6 +287,7 @@ def fetch_and_store():
             df = fetch_real_netcdf_float(fl["id"], fl["dac"])
             if not df.empty:
                 all_data.append(df)
+                expected_records += len(df)
         except Exception as e:
             msg = f"Failed to fetch/parse real data for float {fl['id']}: {e}"
             print(msg)
@@ -226,13 +301,13 @@ def fetch_and_store():
     else:
         print("Real data ingestion failed entirely. Falling back to synthetic generator...")
         synthetic_df = generate_synthetic_data()
+        expected_records = len(synthetic_df)
         print(f"Ingesting {len(synthetic_df)} rows of synthetic data...")
         insert_dataframe(synthetic_df, "floats")
         
     # Verify count
     conn = get_connection()
     # Check table row count
-    db_type = os.getenv("DB_TYPE", "duckdb").lower()
     if db_type == "postgres":
         cur = conn.cursor()
         cur.execute("SELECT COUNT(*) FROM floats;")
@@ -243,6 +318,9 @@ def fetch_and_store():
     conn.close()
     
     print(f"ETL Complete. Total rows in floats database: {count}")
+    
+    if count != expected_records:
+        print(f"WARNING: Database count ({count}) does not match expected records ({expected_records}) from this run!")
 
 if __name__ == "__main__":
     fetch_and_store()
