@@ -1,0 +1,16 @@
+argopy
+pandas
+xarray
+netCDF4
+fastapi
+uvicorn
+streamlit
+chromadb
+groq
+google-genai
+plotly
+folium
+streamlit-folium
+python-dotenv
+sqlalchemy
+requests

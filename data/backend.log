@@ -1,0 +1,26 @@
+2026-07-12 12:28:20,154 [INFO] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 12:28:20,869 [INFO] HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-12 12:28:20,887 [INFO] Success in 0.73s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 12:30:10,970 [INFO] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 12:30:10,982 [INFO] Success in 0.01s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 12:48:53,614 [INFO] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 12:48:53,648 [INFO] Success in 0.03s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 12:49:11,785 [INFO] Received question: 'were do you get data from'
+2026-07-12 12:49:12,728 [INFO] HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-12 12:49:12,805 [INFO] Success in 1.02s | SQL: SELECT * FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 12:49:14,321 [INFO] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 12:49:14,325 [INFO] Success in 0.00s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 12:50:01,001 [INFO] Received question: 'Find nearest ARGO floats to lat 12, lon 65'
+2026-07-12 12:50:01,678 [INFO] HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-12 12:50:01,684 [INFO] Success in 0.68s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 5 | Returned: 5 rows
+2026-07-12 12:50:15,194 [INFO] Received question: 'What's the salinity in the Arabian Sea in January 2023?'
+2026-07-12 12:50:15,198 [INFO] Success in 0.00s | SQL: SELECT float_id, lat, lon, date, depth, salinity FROM floats WHERE region = 'Arabian Sea' AND date BETWEEN '2023-01-01' AND '2023-01-31' LIMIT 500 | Returned: 104 rows
+2026-07-12 12:53:21,252 [INFO] Received question: 'where do you get data from'
+2026-07-12 12:53:21,792 [INFO] HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-12 12:53:21,797 [INFO] Success in 0.54s | SQL: SELECT * FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 12:53:30,651 [INFO] Received question: 'Find nearest ARGO floats to lat 12, lon 65'
+2026-07-12 12:53:30,967 [INFO] Received question: 'Find nearest ARGO floats to lat 12, lon 65'
+2026-07-12 12:53:31,198 [INFO] HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-12 12:53:31,201 [INFO] Success in 0.55s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 5 | Returned: 5 rows
+2026-07-12 12:53:31,542 [INFO] HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-12 12:53:31,545 [INFO] Success in 0.58s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 5 | Returned: 5 rows
