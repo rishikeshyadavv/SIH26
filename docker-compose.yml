@@ -43,26 +43,6 @@ services:
       - db
       - redis
 
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-    container_name: floatchat-frontend
-    restart: always
-    env_file:
-      - .env
-    environment:
-      - API_URL=http://backend:8000/ask
-      - DB_TYPE=postgres
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${POSTGRES_DB:-floats_db}
-    ports:
-      - "8501:8501"
-    depends_on:
-      - backend
-
 volumes:
   pgdata:
+

@@ -366,3 +366,385 @@
 2026-07-12 14:42:07 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
 2026-07-12 14:42:07 | ERROR | SQL Agent failed for 'list all float ids': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
 2026-07-12 14:42:07 | ERROR | SQL Agent failed for 'list all float ids': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:02:15 | INFO | Groq client initialized successfully.
+2026-07-12 18:02:15 | INFO | Gemini client initialized successfully.
+2026-07-12 18:02:19 | WARNING | Unsafe SQL generated: 'I'm not able to fulfill this request as it goes against the rules provided. The rules state to never write INSERT, UPDATE, DELETE, DROP, or ALTER queries. If you have any other questions or requests that follow the rules, I would be happy to help.' for question: 'Delete all data from the database'
+2026-07-12 18:02:20 | WARNING | Unsafe SQL generated: 'I can only write SELECT queries. I'm not allowed to write DROP, INSERT, UPDATE, DELETE, or ALTER queries. If you'd like to ask a question about the data in the floats table, I'd be happy to help with a SELECT query.' for question: 'DROP TABLE floats;'
+2026-07-12 18:15:16 | INFO | Groq client initialized successfully.
+2026-07-12 18:15:16 | INFO | Gemini client initialized successfully.
+2026-07-12 18:15:47 | INFO | [Proxy] Received question: 'Give me database statistics summary'
+2026-07-12 18:15:47 | INFO | [Proxy] Received question: 'Give me database statistics summary'
+2026-07-12 18:15:49 | INFO | [Proxy] Success in 1.80s | SQL: SELECT 
+  COUNT(float_id) AS total_records,
+  COUNT(DISTINCT float_id) AS unique_floats,
+  COUNT(DISTINCT region) AS unique_regions,
+  MIN(depth) AS min_depth,
+  MAX(depth) AS max_depth,
+  MIN(temperature) AS min_temperature,
+  MAX(temperature) AS max_temperature,
+  MIN(salinity) AS min_salinity,
+  MAX(salinity) AS max_salinity,
+  MIN(date) AS earliest_date,
+  MAX(date) AS latest_date,
+  AVG(depth) AS avg_depth,
+  AVG(temperature) AS avg_temperature,
+  AVG(salinity) AS avg_salinity 
+FROM floats | Returned: 1 rows
+2026-07-12 18:15:49 | INFO | [Proxy] Success in 1.80s | SQL: SELECT 
+  COUNT(float_id) AS total_records,
+  COUNT(DISTINCT float_id) AS unique_floats,
+  COUNT(DISTINCT region) AS unique_regions,
+  MIN(depth) AS min_depth,
+  MAX(depth) AS max_depth,
+  MIN(temperature) AS min_temperature,
+  MAX(temperature) AS max_temperature,
+  MIN(salinity) AS min_salinity,
+  MAX(salinity) AS max_salinity,
+  MIN(date) AS earliest_date,
+  MAX(date) AS latest_date,
+  AVG(depth) AS avg_depth,
+  AVG(temperature) AS avg_temperature,
+  AVG(salinity) AS avg_salinity 
+FROM floats | Returned: 1 rows
+2026-07-12 18:15:58 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 18:15:58 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 18:15:58 | INFO | [Proxy] Success in 0.04s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 18:15:58 | INFO | [Proxy] Success in 0.04s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 18:16:00 | INFO | [Proxy] Received question: 'What's the salinity in the Arabian Sea in January 2023?'
+2026-07-12 18:16:00 | INFO | [Proxy] Received question: 'What's the salinity in the Arabian Sea in January 2023?'
+2026-07-12 18:16:00 | INFO | [Proxy] Success in 0.05s | SQL: SELECT float_id, lat, lon, date, depth, salinity FROM floats WHERE region = 'Arabian Sea' AND date BETWEEN '2023-01-01' AND '2023-01-31' LIMIT 500 | Returned: 104 rows
+2026-07-12 18:16:00 | INFO | [Proxy] Success in 0.05s | SQL: SELECT float_id, lat, lon, date, depth, salinity FROM floats WHERE region = 'Arabian Sea' AND date BETWEEN '2023-01-01' AND '2023-01-31' LIMIT 500 | Returned: 104 rows
+2026-07-12 18:16:19 | INFO | [Proxy] Received question: 'Give me database statistics summary'
+2026-07-12 18:16:19 | INFO | [Proxy] Received question: 'Give me database statistics summary'
+2026-07-12 18:16:19 | INFO | [Proxy] Success in 0.04s | SQL: SELECT 
+  COUNT(float_id) AS total_records,
+  COUNT(DISTINCT float_id) AS unique_floats,
+  COUNT(DISTINCT region) AS unique_regions,
+  MIN(depth) AS min_depth,
+  MAX(depth) AS max_depth,
+  MIN(temperature) AS min_temperature,
+  MAX(temperature) AS max_temperature,
+  MIN(salinity) AS min_salinity,
+  MAX(salinity) AS max_salinity,
+  MIN(date) AS earliest_date,
+  MAX(date) AS latest_date,
+  AVG(depth) AS avg_depth,
+  AVG(temperature) AS avg_temperature,
+  AVG(salinity) AS avg_salinity 
+FROM floats | Returned: 1 rows
+2026-07-12 18:16:19 | INFO | [Proxy] Success in 0.04s | SQL: SELECT 
+  COUNT(float_id) AS total_records,
+  COUNT(DISTINCT float_id) AS unique_floats,
+  COUNT(DISTINCT region) AS unique_regions,
+  MIN(depth) AS min_depth,
+  MAX(depth) AS max_depth,
+  MIN(temperature) AS min_temperature,
+  MAX(temperature) AS max_temperature,
+  MIN(salinity) AS min_salinity,
+  MAX(salinity) AS max_salinity,
+  MIN(date) AS earliest_date,
+  MAX(date) AS latest_date,
+  AVG(depth) AS avg_depth,
+  AVG(temperature) AS avg_temperature,
+  AVG(salinity) AS avg_salinity 
+FROM floats | Returned: 1 rows
+2026-07-12 18:16:26 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 18:16:26 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 18:16:26 | INFO | [Proxy] Success in 0.10s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 18:16:26 | INFO | [Proxy] Success in 0.10s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 18:16:40 | INFO | [Proxy] Received question: 'where do you get data ''
+2026-07-12 18:16:40 | INFO | [Proxy] Received question: 'where do you get data ''
+2026-07-12 18:16:41 | INFO | [Proxy] Success in 1.22s | SQL: SELECT * FROM floats WHERE float_id = 'data' ORDER BY date, depth LIMIT 500 | Returned: 0 rows
+2026-07-12 18:16:41 | INFO | [Proxy] Success in 1.22s | SQL: SELECT * FROM floats WHERE float_id = 'data' ORDER BY date, depth LIMIT 500 | Returned: 0 rows
+2026-07-12 18:17:03 | INFO | [Proxy] Received question: 'ph of arabian sea at 3rd june'
+2026-07-12 18:17:03 | INFO | [Proxy] Received question: 'ph of arabian sea at 3rd june'
+2026-07-12 18:17:04 | INFO | [Proxy] Success in 1.06s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity FROM floats WHERE region = 'Arabian Sea' AND date = '2023-06-03' LIMIT 500 | Returned: 0 rows
+2026-07-12 18:17:04 | INFO | [Proxy] Success in 1.06s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity FROM floats WHERE region = 'Arabian Sea' AND date = '2023-06-03' LIMIT 500 | Returned: 0 rows
+2026-07-12 18:17:14 | INFO | [Proxy] Received question: 'Find nearest ARGO floats to lat 12, lon 65'
+2026-07-12 18:17:14 | INFO | [Proxy] Received question: 'Find nearest ARGO floats to lat 12, lon 65'
+2026-07-12 18:17:15 | INFO | [Proxy] Success in 0.78s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 500 | Returned: 500 rows
+2026-07-12 18:17:15 | INFO | [Proxy] Success in 0.78s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 500 | Returned: 500 rows
+2026-07-12 18:17:24 | INFO | [Proxy] Received question: 'Compare salinity in the Arabian Sea vs Bay of Bengal'
+2026-07-12 18:17:24 | INFO | [Proxy] Received question: 'Compare salinity in the Arabian Sea vs Bay of Bengal'
+2026-07-12 18:17:24 | INFO | [Proxy] Success in 0.04s | SQL: SELECT region, AVG(salinity) as avg_salinity FROM floats WHERE region IN ('Arabian Sea', 'Bay of Bengal') GROUP BY region | Returned: 2 rows
+2026-07-12 18:17:24 | INFO | [Proxy] Success in 0.04s | SQL: SELECT region, AVG(salinity) as avg_salinity FROM floats WHERE region IN ('Arabian Sea', 'Bay of Bengal') GROUP BY region | Returned: 2 rows
+2026-07-12 18:17:31 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 18:17:31 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 18:17:31 | INFO | [Proxy] Success in 0.04s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 18:17:31 | INFO | [Proxy] Success in 0.04s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 18:29:52 | INFO | Groq client initialized successfully.
+2026-07-12 18:29:52 | INFO | Gemini client initialized successfully.
+2026-07-12 18:30:12 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:30:12 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:30:14 | INFO | [Proxy] Success in 1.84s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:30:14 | INFO | [Proxy] Success in 1.84s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:30:39 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:30:39 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:30:39 | INFO | [Proxy] Success in 0.04s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:30:39 | INFO | [Proxy] Success in 0.04s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:30:59 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 18:30:59 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 18:30:59 | INFO | [Proxy] Success in 0.06s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 18:30:59 | INFO | [Proxy] Success in 0.06s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 195 rows
+2026-07-12 18:31:38 | INFO | [Proxy] Received question: 'Nearest floats to lat 12, lon 65'
+2026-07-12 18:31:38 | INFO | [Proxy] Received question: 'Nearest floats to lat 12, lon 65'
+2026-07-12 18:31:40 | INFO | [Proxy] Success in 1.23s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 500 | Returned: 500 rows
+2026-07-12 18:31:40 | INFO | [Proxy] Success in 1.23s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 500 | Returned: 500 rows
+2026-07-12 18:42:54 | INFO | Groq client initialized successfully.
+2026-07-12 18:42:54 | INFO | Gemini client initialized successfully.
+2026-07-12 18:42:59 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99329, Requested 876. Please try again in 2m57.12s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:42:59 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:42:59 | ERROR | SQL Agent failed for 'Delete all data from the database': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:43:00 | WARNING | Unsafe SQL generated: 'I can only write SELECT queries. I'm not allowed to write DROP, INSERT, UPDATE, DELETE, or ALTER queries. If you'd like to ask a question about the data in the floats table, I'd be happy to help with a SELECT query.' for question: 'DROP TABLE floats;'
+2026-07-12 18:43:57 | INFO | Groq client initialized successfully.
+2026-07-12 18:43:57 | INFO | Gemini client initialized successfully.
+2026-07-12 18:43:59 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99907, Requested 730. Please try again in 9m10.367999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:00 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:00 | ERROR | SQL Agent failed for 'Find nearest ARGO floats to lat 12, lon 65': 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:00 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99905, Requested 950. Please try again in 12m18.72s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:00 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:00 | ERROR | SQL Agent failed for 'What is the average temperature in Equatorial region in March 2023?': 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:01 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99905, Requested 944. Please try again in 12m13.536s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:01 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:01 | ERROR | SQL Agent failed for 'Find temperature at 50m depth in the Bay of Bengal on 2023-01-11': 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:01 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99904, Requested 885. Please try again in 11m21.695999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:02 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:02 | ERROR | SQL Agent failed for 'What's the maximum temperature recorded by float 2902266?': 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:02 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99903, Requested 652. Please try again in 7m59.52s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:02 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:02 | ERROR | SQL Agent failed for 'Give me a list of all unique float IDs': 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:03 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99902, Requested 669. Please try again in 8m13.344s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:03 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:03 | ERROR | SQL Agent failed for 'Delete all data from the database': 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:04 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99901, Requested 647. Please try again in 7m53.472s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:04 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:04 | ERROR | SQL Agent failed for 'DROP TABLE floats;': 404 models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:34 | INFO | Groq client initialized successfully.
+2026-07-12 18:44:34 | INFO | Gemini client initialized successfully.
+2026-07-12 18:44:35 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99864, Requested 740. Please try again in 8m41.856s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:36 | ERROR | Gemini API call failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:36 | ERROR | SQL Agent failed for 'Find nearest ARGO floats to lat 12, lon 65': 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:37 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99863, Requested 743. Please try again in 8m43.584s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:37 | ERROR | Gemini API call failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:37 | ERROR | SQL Agent failed for 'What is the average temperature in Equatorial region in March 2023?': 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:37 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99862, Requested 737. Please try again in 8m37.535999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:38 | ERROR | Gemini API call failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:38 | ERROR | SQL Agent failed for 'Find temperature at 50m depth in the Bay of Bengal on 2023-01-11': 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:38 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99861, Requested 678. Please try again in 7m45.696s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:38 | ERROR | Gemini API call failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:38 | ERROR | SQL Agent failed for 'What's the maximum temperature recorded by float 2902266?': 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:39 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99861, Requested 849. Please try again in 10m13.44s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:39 | ERROR | Gemini API call failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:39 | ERROR | SQL Agent failed for 'Give me a list of all unique float IDs': 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:40 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99860, Requested 679. Please try again in 7m45.696s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:40 | ERROR | Gemini API call failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:40 | ERROR | SQL Agent failed for 'Delete all data from the database': 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:40 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99859, Requested 647. Please try again in 7m17.184s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:44:40 | ERROR | Gemini API call failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:44:40 | ERROR | SQL Agent failed for 'DROP TABLE floats;': 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:35 | INFO | Groq client initialized successfully.
+2026-07-12 18:45:35 | INFO | Gemini client initialized successfully.
+2026-07-12 18:45:36 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99794, Requested 730. Please try again in 7m32.736s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:45:37 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:45:38 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:38 | ERROR | SQL Agent failed for 'Find nearest ARGO floats to lat 12, lon 65': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:38 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99792, Requested 753. Please try again in 7m50.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:45:38 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:45:39 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:39 | ERROR | SQL Agent failed for 'What is the average temperature in Equatorial region in March 2023?': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:39 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99790, Requested 944. Please try again in 10m34.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:45:40 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:45:40 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:40 | ERROR | SQL Agent failed for 'Find temperature at 50m depth in the Bay of Bengal on 2023-01-11': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:40 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99789, Requested 885. Please try again in 9m42.336s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:45:41 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:45:41 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:41 | ERROR | SQL Agent failed for 'What's the maximum temperature recorded by float 2902266?': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:41 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99788, Requested 849. Please try again in 9m10.367999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:45:42 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:45:42 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:42 | ERROR | SQL Agent failed for 'Give me a list of all unique float IDs': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:43 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99787, Requested 876. Please try again in 9m32.832s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:45:43 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:45:43 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:43 | ERROR | SQL Agent failed for 'Delete all data from the database': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:44 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99785, Requested 844. Please try again in 9m3.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:45:44 | WARNING | gemini-2.5-flash model failed: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash
+Please retry in 14.125044526s. [links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 5
+}
+, retry_delay {
+  seconds: 14
+}
+]. Trying legacy gemini-1.5-flash...
+2026-07-12 18:45:44 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:45:44 | ERROR | SQL Agent failed for 'DROP TABLE floats;': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:42 | INFO | Groq client initialized successfully.
+2026-07-12 18:52:42 | INFO | Gemini client initialized successfully.
+2026-07-12 18:52:43 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99300, Requested 950. Please try again in 3m36s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:52:44 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:52:44 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:44 | ERROR | SQL Agent failed for 'What is the average temperature in Equatorial region in March 2023?': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:45 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99298, Requested 944. Please try again in 3m29.088s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:52:45 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:52:45 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:45 | ERROR | SQL Agent failed for 'Find temperature at 50m depth in the Bay of Bengal on 2023-01-11': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:46 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99297, Requested 885. Please try again in 2m37.248s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:52:46 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:52:47 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:47 | ERROR | SQL Agent failed for 'What's the maximum temperature recorded by float 2902266?': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:47 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99295, Requested 849. Please try again in 2m4.416s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:52:47 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:52:48 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:48 | ERROR | SQL Agent failed for 'Give me a list of all unique float IDs': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:48 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99294, Requested 876. Please try again in 2m26.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:52:49 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:52:49 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:49 | ERROR | SQL Agent failed for 'Delete all data from the database': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:49 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99293, Requested 844. Please try again in 1m58.368s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:52:50 | WARNING | gemini-2.5-flash model failed: 404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.. Trying legacy gemini-1.5-flash...
+2026-07-12 18:52:50 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:52:50 | ERROR | SQL Agent failed for 'DROP TABLE floats;': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:53:21 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:53:21 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:53:21 | INFO | [Proxy] Success in 0.12s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:53:21 | INFO | [Proxy] Success in 0.12s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:53:30 | INFO | [Proxy] Received question: 'hello'
+2026-07-12 18:53:30 | INFO | [Proxy] Received question: 'hello'
+2026-07-12 18:53:31 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99244, Requested 948. Please try again in 2m45.888s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:53:31 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99244, Requested 948. Please try again in 2m45.888s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:53:32 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:53:32 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:53:32 | INFO | [Proxy] Success in 0.15s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:53:32 | INFO | [Proxy] Success in 0.15s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:53:32 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:53:32 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:53:32 | ERROR | SQL Agent failed for 'hello': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:53:32 | ERROR | SQL Agent failed for 'hello': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:53:32 | ERROR | [Proxy] Failed in 1.59s | Error: AI Processing/SQL Execution Error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. | Generated SQL: No SQL generated
+2026-07-12 18:53:32 | ERROR | [Proxy] Failed in 1.59s | Error: AI Processing/SQL Execution Error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. | Generated SQL: No SQL generated
+2026-07-12 18:53:39 | INFO | [Proxy] Received question: 'bye'
+2026-07-12 18:53:39 | INFO | [Proxy] Received question: 'bye'
+2026-07-12 18:53:40 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99234, Requested 948. Please try again in 2m37.248s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:53:40 | WARNING | Groq API call failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kmtgwxrwf51vwvvde5cq48nw` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99234, Requested 948. Please try again in 2m37.248s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Trying Gemini fallback...
+2026-07-12 18:53:40 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:53:40 | ERROR | Gemini API call failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:53:40 | ERROR | SQL Agent failed for 'bye': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:53:40 | ERROR | SQL Agent failed for 'bye': 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+2026-07-12 18:53:41 | ERROR | [Proxy] Failed in 1.22s | Error: AI Processing/SQL Execution Error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. | Generated SQL: No SQL generated
+2026-07-12 18:53:41 | ERROR | [Proxy] Failed in 1.22s | Error: AI Processing/SQL Execution Error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods. | Generated SQL: No SQL generated
+2026-07-12 18:54:18 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:54:18 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:54:18 | INFO | [Proxy] Success in 0.11s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:54:18 | INFO | [Proxy] Success in 0.11s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:54:42 | INFO | [Proxy] Received question: 'Find nearest ARGO floats to lat 12, lon 65'
+2026-07-12 18:54:42 | INFO | [Proxy] Received question: 'Find nearest ARGO floats to lat 12, lon 65'
+2026-07-12 18:54:42 | INFO | [Proxy] Success in 0.10s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 500 | Returned: 500 rows
+2026-07-12 18:54:42 | INFO | [Proxy] Success in 0.10s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 500 | Returned: 500 rows
+2026-07-12 18:57:10 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:57:10 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 18:57:10 | INFO | [Proxy] Success in 0.17s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 18:57:10 | INFO | [Proxy] Success in 0.17s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 19:03:36 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 19:03:36 | INFO | [Proxy] Received question: 'hi'
+2026-07-12 19:03:36 | INFO | [Proxy] Success in 0.05s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 19:03:36 | INFO | [Proxy] Success in 0.05s | SQL: SELECT float_id, lat, lon, date, depth, temperature, salinity, region FROM floats LIMIT 500 | Returned: 500 rows
+2026-07-12 19:04:03 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 19:04:03 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-12 19:04:03 | INFO | [Proxy] Success in 0.04s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 500 rows
+2026-07-12 19:04:03 | INFO | [Proxy] Success in 0.04s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 500 rows
+2026-07-12 19:04:11 | INFO | [Proxy] Received question: 'Find nearest ARGO floats to lat 12, lon 65'
+2026-07-12 19:04:11 | INFO | [Proxy] Received question: 'Find nearest ARGO floats to lat 12, lon 65'
+2026-07-12 19:04:11 | INFO | [Proxy] Success in 0.04s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 500 | Returned: 500 rows
+2026-07-12 19:04:11 | INFO | [Proxy] Success in 0.04s | SQL: SELECT float_id, lat, lon, region, (lat - 12.0)*(lat - 12.0) + (lon - 65.0)*(lon - 65.0) as distance_sq FROM floats ORDER BY distance_sq LIMIT 500 | Returned: 500 rows
+2026-07-13 13:05:49 | INFO | Groq client initialized successfully.
+2026-07-13 13:05:49 | INFO | Gemini client initialized successfully.
+2026-07-13 13:06:46 | INFO | Groq client initialized successfully.
+2026-07-13 13:06:46 | INFO | Gemini client initialized successfully.
+2026-07-13 13:07:38 | INFO | Groq client initialized successfully.
+2026-07-13 13:07:38 | INFO | Gemini client initialized successfully.
+2026-07-13 13:08:51 | INFO | Groq client initialized successfully.
+2026-07-13 13:08:51 | INFO | Gemini client initialized successfully.
+2026-07-13 13:09:09 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-13 13:09:09 | INFO | [Proxy] Received question: 'Show me the temperature profile of float 2902264'
+2026-07-13 13:09:09 | INFO | [Proxy] Success in 0.06s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 500 rows
+2026-07-13 13:09:09 | INFO | [Proxy] Success in 0.06s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 500 rows
+2026-07-13 13:09:19 | INFO | [Proxy] Received question: 'hi'
+2026-07-13 13:09:19 | INFO | [Proxy] Received question: 'hi'
+2026-07-13 13:09:19 | ERROR | [Proxy] Failed in 0.00s | Error: Hello! I am FloatChat, your conversational assistant for ARGO oceanographic floats. I translate plain English questions into database queries to search for temperatures, salinities, regions, or coordinates. Try asking: 'Show me the temperature profile of float 2902264' or 'Find nearest ARGO floats to lat 12, lon 65'. | Generated SQL: SELECT * FROM floats LIMIT 5;
+2026-07-13 13:09:19 | ERROR | [Proxy] Failed in 0.00s | Error: Hello! I am FloatChat, your conversational assistant for ARGO oceanographic floats. I translate plain English questions into database queries to search for temperatures, salinities, regions, or coordinates. Try asking: 'Show me the temperature profile of float 2902264' or 'Find nearest ARGO floats to lat 12, lon 65'. | Generated SQL: SELECT * FROM floats LIMIT 5;
+2026-07-13 13:09:46 | INFO | [Proxy] Received question: 'Find nearest ARGO floats to lat 12, lon 75'
+2026-07-13 13:09:46 | INFO | [Proxy] Received question: 'Find nearest ARGO floats to lat 12, lon 75'
+2026-07-13 13:09:48 | WARNING | First-attempt SQL execution failed for 'SELECT float_id, lat, lon, region, MIN((lat - 12.0)*(lat - 12.0) + (lon - 75.0)*(lon - 75.0)) as distance_sq FROM floats GROUP BY float_id ORDER BY distance_sq LIMIT 5': Binder Error: column "lat" must appear in the GROUP BY clause or must be part of an aggregate function.
+Either add it to the GROUP BY list, or use "ANY_VALUE(lat)" if the exact value of "lat" is not important.
+
+LINE 1: SELECT float_id, lat, lon, region, MIN((lat - 12.0)*(lat - 12.0) + (lon ...
+                         ^. Retrying self-correction...
+2026-07-13 13:09:48 | WARNING | First-attempt SQL execution failed for 'SELECT float_id, lat, lon, region, MIN((lat - 12.0)*(lat - 12.0) + (lon - 75.0)*(lon - 75.0)) as distance_sq FROM floats GROUP BY float_id ORDER BY distance_sq LIMIT 5': Binder Error: column "lat" must appear in the GROUP BY clause or must be part of an aggregate function.
+Either add it to the GROUP BY list, or use "ANY_VALUE(lat)" if the exact value of "lat" is not important.
+
+LINE 1: SELECT float_id, lat, lon, region, MIN((lat - 12.0)*(lat - 12.0) + (lon ...
+                         ^. Retrying self-correction...
+2026-07-13 13:09:49 | INFO | [Proxy] Success in 2.40s | SQL: SELECT float_id, MIN(lat) as lat, MIN(lon) as lon, MIN(region) as region, MIN((lat - 12.0)*(lat - 12.0) + (lon - 75.0)*(lon - 75.0)) as distance_sq FROM floats GROUP BY float_id ORDER BY distance_sq LIMIT 5 | Returned: 5 rows
+2026-07-13 13:09:49 | INFO | [Proxy] Success in 2.40s | SQL: SELECT float_id, MIN(lat) as lat, MIN(lon) as lon, MIN(region) as region, MIN((lat - 12.0)*(lat - 12.0) + (lon - 75.0)*(lon - 75.0)) as distance_sq FROM floats GROUP BY float_id ORDER BY distance_sq LIMIT 5 | Returned: 5 rows
+2026-07-13 13:10:12 | INFO | [Proxy] Received question: 'what is you task?'
+2026-07-13 13:10:12 | INFO | [Proxy] Received question: 'what is you task?'
+2026-07-13 13:10:13 | ERROR | [Proxy] Failed in 1.02s | Error: My task is to evaluate the user's intent dynamically. If the user query is conversational, I will respond naturally in plain conversational English. If the user query is a request for data exploration, filtering, or analysis related to the oceanographic ARGO float database, I will translate it into a valid and optimized SQL query. | Generated SQL: 
+2026-07-13 13:10:13 | ERROR | [Proxy] Failed in 1.02s | Error: My task is to evaluate the user's intent dynamically. If the user query is conversational, I will respond naturally in plain conversational English. If the user query is a request for data exploration, filtering, or analysis related to the oceanographic ARGO float database, I will translate it into a valid and optimized SQL query. | Generated SQL: 
+2026-07-13 13:10:25 | INFO | [Proxy] Received question: 'what is your api'
+2026-07-13 13:10:25 | INFO | [Proxy] Received question: 'what is your api'
+2026-07-13 13:10:27 | ERROR | [Proxy] Failed in 1.25s | Error: I don't have a traditional API in the sense of a RESTful interface or a specific endpoint that you can send HTTP requests to. Instead, I'm a conversational AI designed to understand and respond to natural language queries.
+
+You can interact with me by simply typing a question or a request, and I'll do my best to understand what you're asking for and provide a helpful response. If your query is related to data exploration or analysis, I'll generate a SQL query that can be used to retrieve the relevant data from the oceanographic ARGO float database.
+
+In other words, my "API" is simply a text-based conversation interface where you can ask me questions or provide input, and I'll respond with the relevant information or a SQL query that can be used to retrieve the data you're interested in. | Generated SQL: 
+2026-07-13 13:10:27 | ERROR | [Proxy] Failed in 1.25s | Error: I don't have a traditional API in the sense of a RESTful interface or a specific endpoint that you can send HTTP requests to. Instead, I'm a conversational AI designed to understand and respond to natural language queries.
+
+You can interact with me by simply typing a question or a request, and I'll do my best to understand what you're asking for and provide a helpful response. If your query is related to data exploration or analysis, I'll generate a SQL query that can be used to retrieve the relevant data from the oceanographic ARGO float database.
+
+In other words, my "API" is simply a text-based conversation interface where you can ask me questions or provide input, and I'll respond with the relevant information or a SQL query that can be used to retrieve the data you're interested in. | Generated SQL: 
+2026-07-13 13:11:35 | INFO | [Proxy] Received question: 'What is an ARGO float?'
+2026-07-13 13:11:35 | INFO | [Proxy] Received question: 'What is an ARGO float?'
+2026-07-13 13:11:38 | ERROR | [Proxy] Failed in 2.84s | Error: An ARGO float is a type of autonomous underwater vehicle designed to collect data about the ocean. ARGO stands for Array for Real-time Geostrophic Oceanography. These floats are part of a global network of over 3,000 devices that drift through the world's oceans, gathering information on temperature, salinity, and other properties of the water.
+
+ARGO floats are typically around 2 meters long and weigh about 20-30 kilograms. They are equipped with sensors to measure temperature, salinity, and pressure, which allows them to calculate the ocean's depth. The floats are designed to sink to a depth of around 1,000-2,000 meters, where they drift with the ocean currents, and then rise back to the surface every 10 days or so to transmit their data to satellites.
+
+The data collected by ARGO floats is used by scientists to study ocean currents, heat transport, and the overall health of the ocean. This information is essential for understanding climate change, predicting weather patterns, and managing marine ecosystems. The ARGO program has been instrumental in improving our understanding of the ocean and its role in the Earth's climate system. | Generated SQL: 
+2026-07-13 13:11:38 | ERROR | [Proxy] Failed in 2.84s | Error: An ARGO float is a type of autonomous underwater vehicle designed to collect data about the ocean. ARGO stands for Array for Real-time Geostrophic Oceanography. These floats are part of a global network of over 3,000 devices that drift through the world's oceans, gathering information on temperature, salinity, and other properties of the water.
+
+ARGO floats are typically around 2 meters long and weigh about 20-30 kilograms. They are equipped with sensors to measure temperature, salinity, and pressure, which allows them to calculate the ocean's depth. The floats are designed to sink to a depth of around 1,000-2,000 meters, where they drift with the ocean currents, and then rise back to the surface every 10 days or so to transmit their data to satellites.
+
+The data collected by ARGO floats is used by scientists to study ocean currents, heat transport, and the overall health of the ocean. This information is essential for understanding climate change, predicting weather patterns, and managing marine ecosystems. The ARGO program has been instrumental in improving our understanding of the ocean and its role in the Earth's climate system. | Generated SQL: 
+2026-07-13 13:17:27 | INFO | Groq client initialized successfully.
+2026-07-13 13:17:27 | INFO | Gemini client initialized successfully.
+2026-07-13 13:19:54 | INFO | Groq client initialized successfully.
+2026-07-13 13:19:54 | INFO | Gemini client initialized successfully.
+2026-07-13 13:19:55 | WARNING | Unauthorized access attempt with API Key: 'invalid_secret_key'
+2026-07-13 13:19:55 | WARNING | Unauthorized access attempt with API Key: 'invalid_secret_key'
+2026-07-13 13:19:55 | INFO | Received question: 'Show temperature profile of float 2902264'
+2026-07-13 13:19:55 | INFO | Received question: 'Show temperature profile of float 2902264'
+2026-07-13 13:19:57 | INFO | Success in 2.25s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 500 rows
+2026-07-13 13:19:57 | INFO | Success in 2.25s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 500 rows
+2026-07-13 13:20:39 | INFO | Groq client initialized successfully.
+2026-07-13 13:20:39 | INFO | Gemini client initialized successfully.
+2026-07-13 13:20:40 | WARNING | Unauthorized access attempt with API Key: 'invalid_secret_key'
+2026-07-13 13:20:40 | WARNING | Unauthorized access attempt with API Key: 'invalid_secret_key'
+2026-07-13 13:20:40 | INFO | Received question: 'Show temperature profile of float 2902264'
+2026-07-13 13:20:40 | INFO | Received question: 'Show temperature profile of float 2902264'
+2026-07-13 13:20:43 | INFO | Success in 2.79s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 500 rows
+2026-07-13 13:20:43 | INFO | Success in 2.79s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 500 rows

@@ -5,9 +5,11 @@ import os
 client = TestClient(app)
 
 def test_health_check():
-    response = client.get("/health")
+    response = client.get("/api/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "healthy", "service": "FloatChat API"}
+    data = response.json()
+    assert data["status"] == "healthy"
+    assert data["service"] == "FloatChat API"
 
 def test_ask_unauthorized():
     # Attempt request without API Key

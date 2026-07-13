@@ -35,6 +35,8 @@ if GROQ_API_KEY and GROQ_API_KEY != "your_groq_key_here":
 gemini_configured = False
 if GEMINI_API_KEY and GEMINI_API_KEY != "your_gemini_key_here":
     try:
+        # Use newer google-genai package if available, or fall back to generativeai
+        import google.generativeai as genai
         genai.configure(api_key=GEMINI_API_KEY)
         gemini_configured = True
         logger.info("Gemini client initialized successfully.")
@@ -133,15 +135,28 @@ def call_llm_gemini(prompt: str, system_prompt: str) -> str:
     if not gemini_configured:
         raise ValueError("Gemini client not configured or key is placeholder.")
     
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        system_instruction=system_prompt
-    )
-    response = model.generate_content(
-        prompt,
-        generation_config={"temperature": 0.0, "max_output_tokens": 250}
-    )
-    return response.text.strip()
+    try:
+        model = genai.GenerativeModel(
+            model_name="gemini-2.5-flash",
+            system_instruction=system_prompt
+        )
+        response = model.generate_content(
+            prompt,
+            generation_config={"temperature": 0.0, "max_output_tokens": 250}
+        )
+        return response.text.strip()
+    except Exception as e:
+        logger.warning(f"gemini-2.5-flash model failed: {e}. Trying legacy gemini-1.5-flash...")
+        model = genai.GenerativeModel(
+            model_name="gemini-1.5-flash",
+            system_instruction=system_prompt
+        )
+        response = model.generate_content(
+            prompt,
+            generation_config={"temperature": 0.0, "max_output_tokens": 250}
+        )
+        return response.text.strip()
+
 
 def ask_llm(prompt: str, system_prompt: str, model_record: list) -> str:
     """Tries Groq first, and falls back to Gemini if Groq fails. Records used model."""
@@ -178,11 +193,22 @@ def run_query_with_retry(question: str):
     """
     start_time = time.time()
     
+    # ── Intercept conversational greetings and guide the user ──────────────────
+    clean_q = question.strip().lower().rstrip("?.!")
+    greetings = ["hi", "hello", "hey", "greetings", "yo", "help", "who are you", "what is this"]
+    if clean_q in greetings:
+        return {
+            "success": False,
+            "error": "Hello! I am FloatChat, your conversational assistant for ARGO oceanographic floats. I translate plain English questions into database queries to search for temperatures, salinities, regions, or coordinates. Try asking: 'Show me the temperature profile of float 2902264' or 'Find nearest ARGO floats to lat 12, lon 65'.",
+            "sql": "SELECT * FROM floats LIMIT 5;"
+        }
+
     # Try cache hit first
     cached_res = get_cached_query(question)
     if cached_res:
         log_query_to_db(question, cached_res["sql"], True, None, 0.0, "cache", True, 0)
         return cached_res
+
 
     # Build dynamic prompt with RAG context
     schema = get_db_schema()
@@ -194,10 +220,21 @@ def run_query_with_retry(question: str):
     retries = 0
     
     try:
-        # Step 1: Generate SQL
-        sql = ask_llm(question, system_prompt, model_used)
-        sql = clean_sql(sql)
+        # Step 1: Generate SQL or conversational response
+        generated_output = ask_llm(question, system_prompt, model_used)
+        sql = clean_sql(generated_output)
         
+        # Check if the output looks like SQL or plain text
+        if not sql.upper().startswith(("SELECT", "WITH")):
+            # Treat as plain conversational text
+            latency = time.time() - start_time
+            log_query_to_db(question, sql, False, sql, latency, model_used[0], False, 0)
+            return {
+                "success": False, # False so frontend knows it didn't generate data rows
+                "error": sql,     # Feed the natural language response into the error/text bubble
+                "sql": ""
+            }
+            
         # Step 2: Validate SQL Safety
         if not is_safe_sql(sql):
             err_msg = "Security Block: The generated query contains unsafe or non-SELECT operations."
