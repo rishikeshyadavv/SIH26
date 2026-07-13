@@ -798,3 +798,11 @@ However, I must point out that the database we are working with is focused on th
 2026-07-13 13:22:46 | INFO | [Proxy] Received question: 'ph?'
 2026-07-13 13:22:48 | ERROR | [Proxy] Failed in 1.48s | Error: It seems like you're asking about the pH level, but the database schema provided only includes information about temperature, salinity, and other parameters, without any mention of pH. If you're looking for information on pH levels in ocean water, I'd be happy to provide some general information or point you in the direction of resources that might be helpful. However, based on the provided database schema, I won't be able to generate a SQL query to retrieve pH data. Would you like to know more about pH in ocean water or is there something else I can help you with? | Generated SQL: 
 2026-07-13 13:22:48 | ERROR | [Proxy] Failed in 1.48s | Error: It seems like you're asking about the pH level, but the database schema provided only includes information about temperature, salinity, and other parameters, without any mention of pH. If you're looking for information on pH levels in ocean water, I'd be happy to provide some general information or point you in the direction of resources that might be helpful. However, based on the provided database schema, I won't be able to generate a SQL query to retrieve pH data. Would you like to know more about pH in ocean water or is there something else I can help you with? | Generated SQL: 
+2026-07-13 13:45:44 | INFO | Groq client initialized successfully.
+2026-07-13 13:45:44 | INFO | Gemini client initialized successfully.
+2026-07-13 13:45:45 | WARNING | Unauthorized access attempt with API Key: 'invalid_secret_key'
+2026-07-13 13:45:45 | WARNING | Unauthorized access attempt with API Key: 'invalid_secret_key'
+2026-07-13 13:45:45 | INFO | Received question: 'Show temperature profile of float 2902264'
+2026-07-13 13:45:45 | INFO | Received question: 'Show temperature profile of float 2902264'
+2026-07-13 13:45:47 | INFO | Success in 2.19s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 500 rows
+2026-07-13 13:45:47 | INFO | Success in 2.19s | SQL: SELECT depth, temperature FROM floats WHERE float_id = '2902264' ORDER BY depth LIMIT 500 | Returned: 500 rows
