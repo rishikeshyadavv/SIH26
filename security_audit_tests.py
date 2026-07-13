@@ -100,7 +100,8 @@ for name, kwargs in auth_tests:
     if name == "health_no_auth":
         r = safe_req("get", f"{BASE}/health")
     else:
-        r = safe_req("post", f"{BASE}/ask", **kwargs)
+        req_kwargs = kwargs if kwargs is not None else {}
+        r = safe_req("post", f"{BASE}/ask", **req_kwargs)
     AUDIT_RESULTS["auth"][name] = {"status": r.status_code, "body": r.text[:200]}
     print(f"  [{name}] HTTP {r.status_code}: {r.text[:100]}")
 

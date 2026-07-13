@@ -8,6 +8,7 @@ streamlit
 chromadb
 groq
 google-genai
+google-generativeai
 plotly
 folium
 streamlit-folium
@@ -20,4 +21,5 @@ redis
 slowapi
 loguru
 pytest
+pytest-mock
 ruff
