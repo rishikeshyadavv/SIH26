@@ -10,7 +10,7 @@ from loguru import logger
 from src.ai.prompts import build_system_prompt
 from src.ai.vector_store import get_db_schema, get_few_shot_examples
 from src.ai.cache import get_cached_query, set_cached_query
-from src.database.db_client import get_connection, execute_query, insert_dataframe
+from src.database.db_client import execute_query, insert_dataframe
 
 load_dotenv()
 

@@ -201,7 +201,7 @@ def fetch_real_netcdf_float(wmo_id, dac_suggested):
                             "salinity": round(s_val, 2),
                             "region": region
                         })
-                except Exception as entry_err:
+                except Exception:
                     # Skip problematic profiles
                     continue
                     

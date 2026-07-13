@@ -36,7 +36,7 @@ def safe_req(method, url, **kwargs):
         class FakeResp:
             status_code = -1
             text = f"CONNECTION_ERROR: {e}"
-            def json(self): return {"error": str(e)}
+            def json(self): return {"error": "Connection error"}
         return FakeResp()
 
 # ─────────────────────────────────────────
@@ -66,7 +66,7 @@ for i in range(20):
         if r.status_code == 200:
             print(f"Server ready after {i+1}s: {r.json()}")
             break
-    except:
+    except Exception:
         pass
 else:
     print("Server did not start in 20s!")
@@ -165,13 +165,13 @@ for name, payload in injection_payloads:
     r = safe_req("post", f"{BASE}/ask", json={"question": payload}, headers=H)
     try:
         resp = r.json()
-    except:
+    except Exception:
         resp = {"raw": r.text}
     
     sql = resp.get("sql", "").upper()
     dangerous_kws = ["DROP", "DELETE", "UPDATE", "INSERT", "TRUNCATE", "ALTER", "CREATE TABLE", "ATTACH", "REPLACE"]
     dangerous = any(kw in sql for kw in dangerous_kws)
-    executed = dangerous and resp.get("success") == True
+    executed = dangerous and resp.get("success")
     
     result = {
         "payload": payload,
@@ -223,12 +223,18 @@ for name, method, url, kwargs in fuzz_tests:
     resp_text = r.text[:500]
     
     leaked = []
-    if "Traceback" in resp_text: leaked.append("PYTHON_TRACEBACK")
-    if 'File "' in resp_text: leaked.append("FILE_PATH_IN_TRACE")
-    if "duckdb" in resp_text.lower() and r.status_code >= 400: leaked.append("DB_ENGINE_LEAKED")
-    if "data/argo" in resp_text.lower(): leaked.append("DB_PATH_LEAKED")
-    if "groq" in resp_text.lower() and "key" in resp_text.lower(): leaked.append("POSSIBLE_API_KEY_LEAK")
-    if "postgres" in resp_text.lower() and r.status_code >= 400: leaked.append("POSTGRES_INFO")
+    if "Traceback" in resp_text:
+        leaked.append("PYTHON_TRACEBACK")
+    if 'File "' in resp_text:
+        leaked.append("FILE_PATH_IN_TRACE")
+    if "duckdb" in resp_text.lower() and r.status_code >= 400:
+        leaked.append("DB_ENGINE_LEAKED")
+    if "data/argo" in resp_text.lower():
+        leaked.append("DB_PATH_LEAKED")
+    if "groq" in resp_text.lower() and "key" in resp_text.lower():
+        leaked.append("POSSIBLE_API_KEY_LEAK")
+    if "postgres" in resp_text.lower() and r.status_code >= 400:
+        leaked.append("POSTGRES_INFO")
     
     AUDIT_RESULTS["fuzzing"][name] = {
         "status": r.status_code,
@@ -294,7 +300,7 @@ for test in integrity_tests:
     gt = test["gt"]
     try:
         match = abs(float(agent_val) - float(gt)) < 0.05 if isinstance(gt, float) else str(agent_val).strip().lower() == str(gt).strip().lower()
-    except:
+    except Exception:
         match = str(agent_val) == str(gt)
     
     status = "PASS" if match else "FAIL"

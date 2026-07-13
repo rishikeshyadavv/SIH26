@@ -1,8 +1,8 @@
 import os
 import json
 import time
+import re
 import pandas as pd
-import numpy as np
 from src.ai.sql_agent import run_query_with_retry
 from src.database.db_client import execute_query
 
@@ -22,8 +22,6 @@ def normalize_sql(sql: str) -> str:
     # Standardize float representation (e.g. 12.0 to 12)
     s = re.sub(r'(\d+)\.0\b', r'\1', s)
     return s.strip()
-
-import re
 
 def standardize_df(df: pd.DataFrame) -> pd.DataFrame:
     """Standardizes a DataFrame for execution match comparisons."""

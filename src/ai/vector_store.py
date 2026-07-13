@@ -1,6 +1,5 @@
 import os
 import chromadb
-from chromadb.config import Settings
 
 CHROMA_DB_PATH = os.getenv("CHROMA_DB_PATH", "data/chroma_db")
 

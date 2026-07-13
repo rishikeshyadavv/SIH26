@@ -1,6 +1,5 @@
 import json
 import os
-import pandas as pd
 from src.database.db_client import execute_query
 
 CACHE_MAP = {
