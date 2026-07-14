@@ -13,9 +13,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code and data directory
+# Copy source code, data directory, and frontend directory
 COPY src/ ./src/
 COPY data/ ./data/
+COPY frontend/ ./frontend/
 
 # Run ETL to pre-ingest data into the database during build
 RUN python -m src.etl.fetch_argo
