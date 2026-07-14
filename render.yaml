@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: floatchat
+    env: docker
+    dockerfilePath: Dockerfile
+    plan: free
+    envVars:
+      - key: DB_TYPE
+        value: duckdb
+      - key: DB_PATH
+        value: data/argo_data.db
+      - key: REDIS_URL
+        value: ""
+      - key: FLOAT_API_KEY
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false

@@ -17,6 +17,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY data/ ./data/
 
+# Run ETL to pre-ingest data into the database during build
+RUN python -m src.etl.fetch_argo
+
 EXPOSE 8000
 
 # FIX H5: Run as non-root user to limit blast radius of any container escape
@@ -26,7 +29,7 @@ USER appuser
 
 # FIX H5: HEALTHCHECK so orchestrators can detect unhealthy containers
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:8000/api/health || exit 1
 
 # Run FastAPI backend using uvicorn
 CMD ["uvicorn", "src.backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
