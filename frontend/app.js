@@ -5,14 +5,49 @@ const PROXY_URL = "/api/query";
 let msgCount = 0;
 let busy = false;
 
-// ── Theme ──
+// ── Theme & Colors ──
 const root = document.documentElement;
 const savedTheme = localStorage.getItem("floatchat-theme");
 if (savedTheme === "light") root.classList.add("light");
 
+const colors = [
+  '#22d3ee', // Cyan
+  '#14b8a6', // Teal
+  '#f5a524', // Amber
+  '#f16565', // Coral
+  '#a855f7', // Purple
+  '#3b82f6'  // Blue
+];
+function getColorForIndex(idx, opacity = 1) {
+  const c = colors[idx % colors.length];
+  if (opacity === 1) return c;
+  const r = parseInt(c.slice(1, 3), 16);
+  const g = parseInt(c.slice(3, 5), 16);
+  const b = parseInt(c.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
 document.getElementById("themeToggle").addEventListener("click", () => {
   root.classList.toggle("light");
-  localStorage.setItem("floatchat-theme", root.classList.contains("light") ? "light" : "dark");
+  const isLight = root.classList.contains("light");
+  localStorage.setItem("floatchat-theme", isLight ? "light" : "dark");
+  
+  // Update Chart.js themes
+  document.querySelectorAll(".chart-canvas").forEach(canvas => {
+    if (canvas._chartInstance) {
+      const chart = canvas._chartInstance;
+      const textColor = isLight ? '#0d1b2e' : '#e7edf5';
+      const gridColor = isLight ? 'rgba(10,22,40,0.08)' : 'rgba(255,255,255,0.08)';
+      chart.options.scales.x.title.color = textColor;
+      chart.options.scales.x.ticks.color = textColor;
+      chart.options.scales.x.grid.color = gridColor;
+      chart.options.scales.y.title.color = textColor;
+      chart.options.scales.y.ticks.color = textColor;
+      chart.options.scales.y.grid.color = gridColor;
+      chart.options.plugins.legend.labels.color = textColor;
+      chart.update();
+    }
+  });
 });
 
 // ── Connection status ──
@@ -48,8 +83,20 @@ document.querySelectorAll(".chip").forEach(chip => {
 // ── Input ──
 const queryInput = document.getElementById("queryInput");
 const sendBtn = document.getElementById("sendBtn");
+const clearChatBtn = document.getElementById("clearChatBtn");
+
 queryInput.addEventListener("keydown", e => { if (e.key === "Enter") submitQuery(); });
 sendBtn.addEventListener("click", submitQuery);
+
+if (clearChatBtn) {
+  clearChatBtn.parentElement.style.display = "none";
+  clearChatBtn.addEventListener("click", () => {
+    document.getElementById("thread").innerHTML = "";
+    document.getElementById("hero").style.display = "block";
+    clearChatBtn.parentElement.style.display = "none";
+    msgCount = 0;
+  });
+}
 
 function el(tag, cls, html) {
   const e = document.createElement(tag);
@@ -72,6 +119,7 @@ async function submitQuery() {
   sendBtn.disabled = true;
 
   document.getElementById("hero").style.display = "none";
+  if (clearChatBtn) clearChatBtn.parentElement.style.display = "flex";
   const thread = document.getElementById("thread");
 
   const userMsg = el("div", "msg user");
@@ -152,6 +200,29 @@ function wireTabs(scope) {
       const name = tab.dataset.tab;
       scope.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === tab));
       scope.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("active", p.dataset.panel === name));
+      
+      if (name === "map") {
+        scope.querySelectorAll(".map-view").forEach(mapEl => {
+          if (mapEl._leafletMap) {
+            setTimeout(() => {
+              mapEl._leafletMap.invalidateSize();
+            }, 100);
+          }
+        });
+      }
+      
+      if (name === "chart") {
+        scope.querySelectorAll(".chart-canvas").forEach(canvas => {
+          if (canvas._chartInstance) {
+            setTimeout(() => {
+              canvas._chartInstance.resize();
+              canvas._chartInstance.update();
+            }, 100);
+          } else {
+            initChartJS(canvas);
+          }
+        });
+      }
     });
   });
 }
@@ -180,34 +251,111 @@ function chartHtml(rows) {
   }
 
   const metric = hasTemp ? "temperature" : "salinity";
-  const label = hasTemp ? "Temperature (°C)" : "Salinity (PSU)";
-  const color = hasTemp ? "#22d3ee" : "#14b8a6";
+  const canvasId = "chart_" + Math.random().toString(36).substr(2, 9);
 
-  const pts = rows
-    .filter(r => r.depth != null && r[metric] != null)
-    .map(r => ({ depth: +r.depth, val: +r[metric] }))
-    .sort((a, b) => a.depth - b.depth);
-  if (!pts.length) return '<p class="empty-note">No plottable points.</p>';
-
-  const W = 640, H = 240, padL = 46, padR = 20, padT = 16, padB = 30;
-  const minV = Math.min(...pts.map(p => p.val)), maxV = Math.max(...pts.map(p => p.val));
-  const minD = Math.min(...pts.map(p => p.depth)), maxD = Math.max(...pts.map(p => p.depth));
-  const x = v => padL + (v - minV) / ((maxV - minV) || 1) * (W - padL - padR);
-  const y = d => padT + (d - minD) / ((maxD - minD) || 1) * (H - padT - padB);
-
-  const pathD = pts.map((p, i) => (i === 0 ? "M" : "L") + x(p.val).toFixed(1) + "," + y(p.depth).toFixed(1)).join(" ");
+  setTimeout(() => {
+    const canvas = document.getElementById(canvasId);
+    if (canvas) {
+      canvas._chartData = rows;
+      canvas._chartMetric = metric;
+      if (canvas.closest('.tab-panel').classList.contains('active')) {
+        initChartJS(canvas);
+      }
+    }
+  }, 50);
 
   return `
-    <svg class="depth-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
-      <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="var(--line)" stroke-width="1"/>
-      <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="var(--line)" stroke-width="1"/>
-      <text x="8" y="${padT + 8}" fill="#4d617e" font-size="9" font-family="IBM Plex Mono">${minD.toFixed(0)}m</text>
-      <text x="8" y="${H - padB}" fill="#4d617e" font-size="9" font-family="IBM Plex Mono">${maxD.toFixed(0)}m</text>
-      <path d="${pathD}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      ${pts.map(p => `<circle cx="${x(p.val).toFixed(1)}" cy="${y(p.depth).toFixed(1)}" r="2.5" fill="var(--deep)" stroke="${color}" stroke-width="1.5"/>`).join("")}
-    </svg>
-    <div class="chart-legend"><span><span class="legend-dot" style="background:${color}"></span>${label} vs depth (depth increases downward)</span></div>
+    <div style="position: relative; height: 320px; width: 100%; margin: 10px 0;">
+      <canvas id="${canvasId}" class="chart-canvas"></canvas>
+    </div>
   `;
+}
+
+function initChartJS(canvas) {
+  if (!canvas || !canvas._chartData || canvas._chartInstance) return;
+
+  const rows = canvas._chartData;
+  const metric = canvas._chartMetric;
+  const isLight = document.documentElement.classList.contains("light");
+  const label = metric === "temperature" ? "Temperature (°C)" : "Salinity (PSU)";
+  
+  const datasets = {};
+  rows.forEach(r => {
+    if (r.depth == null || r[metric] == null) return;
+    const floatId = r.float_id || "Float Data";
+    if (!datasets[floatId]) datasets[floatId] = [];
+    datasets[floatId].push({ x: +r[metric], y: +r.depth });
+  });
+
+  const chartDatasets = Object.keys(datasets).map((floatId, idx) => {
+    const data = datasets[floatId].sort((a, b) => a.y - b.y);
+    const color = getColorForIndex(idx);
+    return {
+      label: `Float ${floatId}`,
+      data: data,
+      borderColor: color,
+      backgroundColor: getColorForIndex(idx, 0.15),
+      borderWidth: 2,
+      pointRadius: 3,
+      pointHoverRadius: 6,
+      tension: 0.2,
+      showLine: true
+    };
+  });
+
+  const textColor = isLight ? '#0d1b2e' : '#e7edf5';
+  const gridColor = isLight ? 'rgba(10,22,40,0.08)' : 'rgba(255,255,255,0.08)';
+
+  canvas._chartInstance = new Chart(canvas, {
+    type: 'scatter',
+    data: { datasets: chartDatasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      scales: {
+        x: {
+          type: 'linear',
+          position: 'top',
+          title: {
+            display: true,
+            text: label,
+            color: textColor,
+            font: { family: 'Inter', size: 12, weight: 'bold' }
+          },
+          ticks: { color: textColor },
+          grid: { color: gridColor }
+        },
+        y: {
+          type: 'linear',
+          reverse: true,
+          title: {
+            display: true,
+            text: 'Depth (m)',
+            color: textColor,
+            font: { family: 'Inter', size: 12, weight: 'bold' }
+          },
+          ticks: { color: textColor },
+          grid: { color: gridColor }
+        }
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor,
+            font: { family: 'IBM Plex Mono', size: 11 }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `${context.dataset.label}: ${context.raw.x} (${label}) at ${context.raw.y}m depth`;
+            }
+          }
+        }
+      }
+    }
+  });
 }
 
 function mapHtml(rows) {
@@ -259,24 +407,4 @@ function initLeafletMap(mapId, pts) {
   mapEl._leafletMap = map;
 }
 
-function wireTabs(scope) {
-  scope.querySelectorAll(".tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-      const name = tab.dataset.tab;
-      scope.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === tab));
-      scope.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("active", p.dataset.panel === name));
-      
-      if (name === "map") {
-        // Trigger invalidateSize to fix leaflet size rendering issues inside hidden tabs
-        scope.querySelectorAll(".map-view").forEach(mapEl => {
-          if (mapEl._leafletMap) {
-            setTimeout(() => {
-              mapEl._leafletMap.invalidateSize();
-            }, 100);
-          }
-        });
-      }
-    });
-  });
-}
 

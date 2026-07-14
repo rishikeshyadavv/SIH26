@@ -148,7 +148,7 @@ def health_check():
 
 
 # Mount Static Files (placed at bottom so API routes match first)
-STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+STATIC_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend"))
 os.makedirs(STATIC_DIR, exist_ok=True)
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -158,5 +158,5 @@ def get_index():
     index_path = os.path.join(STATIC_DIR, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path)
-    return {"message": "Welcome to FloatChat API. Please create index.html in the static folder to display the UI dashboard."}
+    return {"message": "Welcome to FloatChat API. Please create index.html in the frontend folder to display the UI dashboard."}
 

@@ -89,15 +89,23 @@ html.light body::before{ opacity:0.08; }
   min-height:100vh;
   display:flex; flex-direction:column;
 }
-@media (min-width:901px){ .app{ margin-left:34px; max-width:936px; } }
+@media (min-width:901px){ .app{ margin:0 auto; max-width:936px; padding-left: 34px; } }
 
 /* ══ NAV ══ */
 .nav{
   display:flex; align-items:center; justify-content:space-between;
   padding:20px 0 18px; border-bottom:1px solid var(--line);
 }
-.brand img{ height:46px; width:auto; filter:drop-shadow(0 0 10px rgba(34,211,238,0.3)); }
-html.light .brand img{ filter:drop-shadow(0 0 8px rgba(8,145,178,0.18)); }
+.brand img{ 
+  height: 60px; 
+  width: auto; 
+  filter: invert(1) hue-rotate(180deg) brightness(1.1) drop-shadow(0 0 12px rgba(34,211,238,0.4));
+  mix-blend-mode: screen;
+}
+html.light .brand img{ 
+  filter: drop-shadow(0 0 8px rgba(8,145,178,0.18));
+  mix-blend-mode: multiply;
+}
 
 .nav-right{ display:flex; align-items:center; gap:10px; }
 .nav-status{
@@ -236,7 +244,7 @@ table.data-table tr:hover td{ color:var(--text); background:var(--surface-hover)
   padding:30px 24px 22px;
 }
 .input-wrap{ max-width:900px; margin:0 auto; }
-@media (min-width:901px){ .input-wrap{ margin-left:calc(34px + (100% - 900px - 34px) / 2); } }
+@media (min-width:901px){ .input-wrap{ max-width:936px; margin:0 auto; padding-left: 34px; } }
 .input-shell{
   display:flex; align-items:center; gap:10px;
   background:var(--deep-2); border:1px solid var(--line); border-radius:var(--radius-lg);
@@ -262,6 +270,10 @@ table.data-table tr:hover td{ color:var(--text); background:var(--surface-hover)
 .send-btn svg{ width:16px; height:16px; }
 
 .hint{ text-align:center; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text-faint); margin-top:11px; letter-spacing:0.03em; }
+
+.clear-chat-container{ display:flex; justify-content:center; margin-bottom:12px; }
+.clear-chat-btn{ background:rgba(255, 255, 255, 0.04); border:1px solid var(--line); color:var(--text-dim); font-family:'Inter', sans-serif; font-size:11px; font-weight:500; padding:6px 14px; border-radius:20px; cursor:pointer; transition:all 0.2s ease; backdrop-filter:blur(8px); letter-spacing:0.05em; text-transform:uppercase; }
+.clear-chat-btn:hover{ background:rgba(241,101,101,0.1); border-color:rgba(241,101,101,0.3); color:var(--coral); transform:translateY(-1px); }
 
 ::selection{ background:rgba(34,211,238,0.25); }
 ::-webkit-scrollbar{ width:8px; height:8px; }
